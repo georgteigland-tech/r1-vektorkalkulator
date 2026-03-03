@@ -19,4 +19,4 @@ Mange elever opplever at GeoGebra CAS blir tregt og knotete for vanlig vektorreg
 
 ## Installasjon
 2. Last ned .exe fil fra releases for windows (Python terminal trengs ikke filen er pakket med pyinstaller)
-3. for linux last ned VektorKalkulatorR1 fra release (ikke .exe fil)
+3. for linux last ned vektorkalkulator.py fra repo og bruk terminal (har ikke pakket fil for Linux)
