@@ -21,4 +21,4 @@ Mange elever opplever at GeoGebra CAS blir tregt og knotete for vanlig vektorreg
 1. Python 3.8+ (innebygd på de fleste skole-PC-er)
 2. ## Hvordan kjøre:
 ```bash
-python3 vektor kalkulatorV1.0.py
+python3 vektorkalkulator.py
