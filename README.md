@@ -1,2 +1,24 @@
-# r1-vektorkalkulator
- # R1 Vektorkalkulator v1.0  Enkel, rask og offline vektorkalkulator for **Matematikk R1** – laget i Python med Tkinter.  Bedre enn GeoGebra CAS for ren vektorregning på heldagsprøven: rask input, ingen knot, kun det du trenger. Se README for mer info.
+# Vektor Kalkulator R1
+
+Enkel, rask og offline vektorkalkulator laget i Python med Tkinter – skreddersydd for Matematikk 1T/R1(videregående Norge).
+
+Mange elever opplever at GeoGebra CAS blir tregt og knotete for vanlig vektorregning på eksamen/heldagsprøve. Denne appen gir deg akkurat det du trenger , raskt og uten distraksjoner.
+
+## Funksjoner
+- Addisjon, subtraksjon, prikkprodukt
+- Vinkel mellom vektorer
+- Lengde/avstand
+- Skalar-multiplikasjon
+- Ortogonal test
+- Posisjon ved tid t (parameterframstilling)
+- Projeksjon
+- Areal parallellogram
+- Kopier resultat til utklippstavle
+
+
+
+## Installasjon
+1. Python 3.8+ (innebygd på de fleste skole-PC-er)
+2. ## Hvordan kjøre:
+```bash
+python3 vektorkalkulator.py
