@@ -2,53 +2,56 @@ import tkinter as tk
 from tkinter import ttk
 import math
 
-#Klasse
+#klasse
 class Vektor:
-    def __init__(self, x, y):
+    def __init__(self, x=0, y=0, z=0):
         self.x = x
         self.y = y
-
-    #representasjon
+        self.z = z
+#representasjon
     def __repr__(self):
-        return f"({self.x:.3f}, {self.y:.3f})"
+        return f"({self.x:.3f}, {self.y:.3f}, {self.z:.3f})"
 
-    #grunnleggende operasjoner
+#grunnleggende operasjoner
     def __add__(self, other):
-        return Vektor(self.x + other.x, self.y + other.y)
+        return Vektor(self.x + other.x, self.y + other.y, self.z + other.z)
 
     def __sub__(self, other):
-        return Vektor(self.x - other.x, self.y - other.y)
+        return Vektor(self.x - other.x, self.y - other.y, self.z - other.z)
 
-    # Matematikk
+#prikkprodukt
     def prikk(self, other):
-        return self.x * other.x + self.y * other.y
+        return self.x*other.x + self.y*other.y + self.z*other.z
 
+#kryssprodukt 3D
+    def kryss(self, other):
+        return Vektor(self.y * other.z - self.z * other.y, self.z * other.x - self.x * other.z, self.x * other.y - self.y * other.x)
+
+#avstand
     def lengde(self):
-        return math.sqrt(self.x**2 + self.y**2)
+        return math.sqrt(self.x**2 + self.y**2 + self.z**2)
 
+#skalarmultiplikasjon
     def scale(self, k):
-        return Vektor(self.x * k, self.y * k)
-
+        return Vektor(self.x*k, self.y*k, self.z*k)
+#projeksjon
     def projeksjon_på(self, other):
         if other.lengde() == 0:
             raise ValueError("Kan ikke projisere på nullvektor")
         faktor = self.prikk(other) / other.prikk(other)
         return other.scale(faktor)
 
-    def parallellogram_areal(self, other):
-        return abs(self.x * other.y - self.y * other.x)
 
-
-
-#GUI oppsett
+# GUI oppsett
 root = tk.Tk()
 APP_VERSION = "1.0"
 root.title(f"Vektorkalkulator R1 v{APP_VERSION}")
-root.geometry("800x550")
+root.geometry("800x600")
 root.minsize(700, 400)
 
+#kostumerer fargene mine slik jeg vil
 style = ttk.Style()
-style.theme_use("clam")  # kostumerer fargene mine slik jeg vil
+style.theme_use("clam")
 
 #rød Fjerne knapp
 style.configure("Danger.TButton", background="#d32f2f", foreground="white", font=("Segoe UI", 10, "bold"), padding=6)
@@ -59,7 +62,6 @@ FRAME_BG = "#252526"
 BTN_BG = "#ffffff"
 BTN_HOVER = "#e6e6e6"
 TEXT_LIGHT = "#ffffff"
-
 root.configure(bg=BG)
 
 #frames
@@ -79,8 +81,10 @@ main_frame.pack(fill="both", expand=True)
 #variabler
 v1x = tk.StringVar()
 v1y = tk.StringVar()
+v1z = tk.StringVar()
 v2x = tk.StringVar()
 v2y = tk.StringVar()
+v2z = tk.StringVar()
 k_var = tk.StringVar()
 resultat = tk.StringVar(value="Resultatet vil vises her")
 
@@ -113,7 +117,7 @@ def lag_entry(master, textvariable, row, column=1, width=10, pady=2):
     return ent
 
 
-# funskjon som adderer to vektorer
+#funskjon som adderer to vektorer
 def kalk_addisjon():
     values = get_vektor()
     if not values:
@@ -144,7 +148,7 @@ def kalk_sub():
 
 
 
-#Lengde mellom to punkter(avstand)
+#lengde mellom to punkter (avstand)
 
 def kalk_lengde():
     values = get_vektor()
@@ -174,7 +178,7 @@ def kalk_vinkel():
         return
 
     cos_theta = prikk / (mag1 * mag2)
-    cos_theta = max(-1, min(1, cos_theta))  # klamper for å unngå feil
+    cos_theta = max(-1, min(1, cos_theta))  #klamper for å unngå feil
     theta_deg = math.degrees(math.acos(cos_theta))
     resultat.set(f"Vinkel = {theta_deg:.2f}°")
 
@@ -185,10 +189,10 @@ def kalk_skalar_produkt():
     values = get_vektor()
     if not values:
         return
-    v1, _ = values  # bare bruk vektor 1
+    v1, _ = values  #bare bruk vektor 1
 
     try:
-        k = float(k_var.get() or "1")  # default 1
+        k = float(k_var.get() or "1")  #default 1
         res_x = k * v1.x
         res_y = k * v1.y
         resultat.set(f"Skalar × Vektor 1: ({res_x:.3f}, {res_y:.3f})")
@@ -197,7 +201,7 @@ def kalk_skalar_produkt():
 
 
 
-#funskjon som kalkulerer om prikkprodukt er 0 - vinkelrett vektorer
+#funskjon som kalkulerer om prikkprodukt er 0, vinkelrett vektorer
 def er_ortogonal():
     values = get_vektor()
     if not values:
@@ -250,7 +254,7 @@ def vektorprojeksjon():
     resultat.set(f"Projeksjon av vektor1 på vektor2: ({proj_x:.3f}, {proj_y:.3f})")
 
 
-
+#Funskjon for vektorareal av parallelogram
 def parallellogram_areal():
     values = get_vektor()
     if not values:
@@ -260,8 +264,22 @@ def parallellogram_areal():
     areal = abs(v1.x * v2.y - v1.y * v2.x)
     resultat.set(f"Areal parallellogram: {areal:.3f}")
 
+#Funskjon for å regne ut kryssprodukt 3D
+def kalk_kryss():
+    values = get_vektor()
+    if not values:
+        return
+    v1, v2 = values
+    
+    if v1.lengde() == 0 or v2.lengde() == 0:
+        resultat.set("Kryssprodukt med nullvektor gir nullvektor")
+        return
+    
+    kryss = v1.kryss(v2)
+    resultat.set(f"Kryssprodukt (3D): {kryss}")
 
-#en funskjon som gjør at fjern knappen legger inn tomme verdier
+
+#en funskjon som gjør at fjern knappen legger inn tomme verdier og resetter input
 def fjern():
     v1x.set("")
     v1y.set("")
@@ -270,70 +288,101 @@ def fjern():
     k_var.set("")
     resultat.set("Resultatet vil vises her")
 
-
+#funksjon som kopierer siste resultat
 def kopier_resultat():
     root.clipboard_clear()
     root.clipboard_append(resultat.get())
     original = resultat.get()
     resultat.set(f"{original} (kopiert!)")
-    root.after(3000, lambda: resultat.set(original))  # resetter feltet etter 3 sekunder
+    root.after(3000, lambda: resultat.set(original))  #resetter feltet etter 3 sekunder
 
 
-#merkelapper/labels
+#grid konfigurasjon
+main_frame.columnconfigure(0, weight=1)
+main_frame.columnconfigure(1, weight=1)
+main_frame.columnconfigure(2, weight=1)
+row = 0
 
-lag_label(main_frame, "R1 Vektorkalkulator v1.0", row=9, column=0, columnspan=2, font=("Segoe UI", 9),
-          style="Dark.TLabel")
+#kjører riktig funksjon
+def kjør_valgt_operasjon():
+    operasjon = valgt_operasjon.get()
+    if operasjon in operasjoner:
+        operasjoner[operasjon]()
+
 
 #vektor 1
-lag_label(main_frame, "Vektor 1", row=0, columnspan=2, pady=(0, 5), font=("Segoe UI", 11, "bold"), style="Dark.TLabel")
-lag_label(main_frame, "X1:", row=1, sticky="e")
-lag_entry(main_frame, v1x, row=1)
-lag_label(main_frame, "Y1", row=2, sticky="e")
-lag_entry(main_frame, v1y, row=2)
+ttk.Label(main_frame, text="Vektor 1", style="Dark.TLabel").grid(row=row, column=0, columnspan=2, pady=(10,5))
+row += 1
 
-#vektor 2
-lag_label(main_frame, "Vektor 2", row=3, columnspan=2, pady=(15, 5),
-          font=("Segoe UI", 11, "bold"), style="Dark.TLabel")
-lag_label(main_frame, "X2:", row=4, sticky="e")
-lag_entry(main_frame, v2x, row=4)
-lag_label(main_frame, "Y2", row=5, sticky="e")
-lag_entry(main_frame, v2y, row=5)
+lag_label(main_frame, "X1:", row=row, column=0, sticky="e")
+lag_entry(main_frame, v1x, row=row, column=1)
+row += 1
 
-#skalar k
-lag_label(main_frame, "Skalar k:", row=6, sticky="e")
-lag_entry(main_frame, k_var, row=6)
+lag_label(main_frame, "Y1:", row=row, column=0, sticky="e")
+lag_entry(main_frame, v1y, row=row, column=1)
+row += 1
 
-#resultat
-ttk.Label(main_frame, textvariable=resultat, font=("Segoe UI", 11, "bold"), style="Dark.TLabel", padding=10).grid(row=8, column=0, columnspan=2, pady=10)
+lag_label(main_frame, "Z1:", row=row, column=0, sticky="e")
+lag_entry(main_frame, v1z, row=row, column=1)
+row += 1
 
-#knapper
-button_frame = ttk.Frame(main_frame, style="Dark.TFrame")
-button_frame.grid(row=7, column=0, columnspan=2, pady=15, sticky="ew")
 
-#konfigurer kolonner jevnt så det blir oversiktlig og ikke overlapper
-for i in range(4):
-    button_frame.columnconfigure(i, weight=1, uniform="buttons")
+#vektor2
+ttk.Label(main_frame, text="Vektor 2", style="Dark.TLabel").grid(row=row, column=0, columnspan=2, pady=(15,5))
+row += 1
 
-#rad 0: Grunnleggende vektoroperasjoner først
-ttk.Button(button_frame, text="Prikkprodukt", command=kalk_prikk, style="Modern.TButton").grid(row=0, column=0, padx=5, pady=5, sticky="ew")
-ttk.Button(button_frame, text="Addisjon", command=kalk_addisjon, style="Modern.TButton").grid(row=0, column=1, padx=5, pady=5, sticky="ew")
-ttk.Button(button_frame, text="Subtraksjon", command=kalk_sub, style="Modern.TButton").grid(row=0, column=2, padx=5, pady=5, sticky="ew")
-ttk.Button(button_frame, text="Lengde", command=kalk_lengde, style="Modern.TButton").grid(row=0, column=3, padx=5, pady=5, sticky="ew")
+lag_label(main_frame, "X2:", row=row, column=0, sticky="e")
+lag_entry(main_frame, v2x, row=row, column=1)
+row += 1
 
-#rad 1: Flere beregninger middels nivå
-ttk.Button(button_frame, text="Skalar × Vektor 1", command=kalk_skalar_produkt, style="Modern.TButton").grid(row=1, column=0, padx=5, pady=5, sticky="ew")
-ttk.Button(button_frame, text="Ortogonal test", command=er_ortogonal, style="Modern.TButton").grid(row=1, column=1, padx=5, pady=5,  sticky="ew")
-ttk.Button(button_frame, text="Vinkel", command=kalk_vinkel, style="Modern.TButton").grid(row=1, column=2, padx=5, pady=5, sticky="ew")
-ttk.Button(button_frame, text="Posisjon ved t", command=posisjon_ved_t, style="Modern.TButton").grid(row=1, column=3, padx=5, pady=5, sticky="ew")
+lag_label(main_frame, "Y2:", row=row, column=0, sticky="e")
+lag_entry(main_frame, v2y, row=row, column=1)
+row += 1
 
-#rad 2: Avanserte funksjoner sist
-ttk.Button(button_frame, text="Vektorprojeksjon", command=vektorprojeksjon, style="Modern.TButton").grid(row=2, column=0, padx=5, pady=5, sticky="ew")
-ttk.Button(button_frame, text="Areal parallellogram", command=parallellogram_areal, style="Modern.TButton").grid(row=2, column=1, padx=5, pady=5, sticky="ew")
-#rad 3: Fjern-knapp over hele bredden
-ttk.Button(button_frame, text="Fjern", command=fjern, style="Danger.TButton").grid(row=3, column=0, columnspan=4, padx=5, pady=10, sticky="ew")
+lag_label(main_frame, "Z2:", row=row, column=0, sticky="e")
+lag_entry(main_frame, v2z, row=row, column=1)
+row += 1
 
-#kopierer
-ttk.Button(main_frame, text="Kopier resultat", command=kopier_resultat, style="Modern.TButton").grid(row=8, column=2, padx=10, sticky="e")
 
-#loop som kjører GUI
+#skalar
+ttk.Label(main_frame, text="Skalar k:", style="Dark.TLabel").grid(row=row, column=0, sticky="e", pady=(15,5))
+lag_entry(main_frame, k_var, row=row, column=1)
+row += 1
+
+#ersjonslabelen
+lag_label(main_frame, f"R1 Vektorkalkulator v{APP_VERSION}", row=row, column=0, columnspan=3, pady=(20, 10), sticky="s", font=("Segoe UI", 9), style="Dark.TLabel")
+
+#operasjoner
+operasjoner = {"Prikkprodukt": kalk_prikk, "Addisjon": kalk_addisjon, "Subtraksjon": kalk_sub, "Lengde": kalk_lengde, "Skalar × Vektor 1": kalk_skalar_produkt, "Ortogonal test": er_ortogonal, "Vinkel": kalk_vinkel, "Posisjon ved t": posisjon_ved_t, "Vektorprojeksjon": vektorprojeksjon, "Areal parallellogram": parallellogram_areal}
+
+
+#operasjonsmeny
+ttk.Label(main_frame, text="Velg operasjon:", style="Dark.TLabel").grid(row=row, column=0, sticky="e", pady=10)
+
+valgt_operasjon = tk.StringVar()
+
+operasjon_meny = ttk.Combobox(main_frame, textvariable=valgt_operasjon, values=list(operasjoner.keys()), state="readonly")
+operasjon_meny.grid(row=row, column=1, sticky="ew", pady=10)
+row += 1
+
+
+#regn ut knappen, valgte blå for å skille seg ut
+style.configure("Calculate.TButton", background="#1976d2", foreground="white", font=("Segoe UI", 11, "bold"), padding=10)
+style.map("Calculate.TButton", background=[("active", "#1565c0"), ("pressed", "#0d47a1")])
+
+ttk.Button(main_frame, text="Regn ut", command=kjør_valgt_operasjon, style="Calculate.TButton").grid(row=row, column=0, columnspan=3, pady=15, padx=10, sticky="ew")
+row += 1
+
+#resultat knapp
+result_frame = ttk.Frame(main_frame, style="Dark.TFrame", relief="solid", borderwidth=1)
+result_frame.grid(row=row, column=0, columnspan=2, pady=20, padx=10, sticky="ew")
+
+ttk.Label(result_frame, textvariable=resultat, font=("Consolas", 12, "bold"), foreground="#aaffff", background="#252526", justify="left", wraplength=600, padding=15).pack(fill="both", expand=True)
+ttk.Button(main_frame, text="Kopier resultat", command=kopier_resultat, style="Modern.TButton").grid(row=row, column=2, padx=10, pady=20, sticky="ne")
+row += 1
+
+#fjern knapp
+ttk.Button(main_frame, text="Fjern", command=fjern, style="Danger.TButton").grid(row=row, column=0, columnspan=3, pady=10, sticky="ew")
+row += 1
+
 root.mainloop()
