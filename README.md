@@ -14,6 +14,7 @@ Mange elever opplever at GeoGebra CAS blir tregt og knotete for vanlig vektorreg
 - Projeksjon
 - Areal parallellogram
 - Kopier resultat til utklippstavle
+- Kryssprodukt 3D
 
 
 
