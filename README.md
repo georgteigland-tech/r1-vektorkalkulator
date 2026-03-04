@@ -1,4 +1,4 @@
-# Vektor Kalkulator R1 2D
+# Enkel vektor kalkulator
 
 Enkel, rask og offline vektorkalkulator laget i Python med Tkinter – skreddersydd for Matematikk 1T/R1(videregående Norge).
 
