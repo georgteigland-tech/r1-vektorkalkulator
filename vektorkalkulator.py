@@ -283,8 +283,10 @@ def kalk_kryss():
 def fjern():
     v1x.set("")
     v1y.set("")
+    v1z.set("")
     v2x.set("")
     v2y.set("")
+    v2z.set("")
     k_var.set("")
     resultat.set("Resultatet vil vises her")
 
@@ -353,8 +355,7 @@ row += 1
 lag_label(main_frame, f"R1 Vektorkalkulator v{APP_VERSION}", row=row, column=0, columnspan=3, pady=(20, 10), sticky="s", font=("Segoe UI", 9), style="Dark.TLabel")
 
 #operasjoner
-operasjoner = {"Prikkprodukt": kalk_prikk, "Addisjon": kalk_addisjon, "Subtraksjon": kalk_sub, "Lengde": kalk_lengde, "Skalar × Vektor 1": kalk_skalar_produkt, "Ortogonal test": er_ortogonal, "Vinkel": kalk_vinkel, "Posisjon ved t": posisjon_ved_t, "Vektorprojeksjon": vektorprojeksjon, "Areal parallellogram": parallellogram_areal}
-
+operasjoner = {"Prikkprodukt": kalk_prikk, "Addisjon": kalk_addisjon, "Subtraksjon": kalk_sub, "Lengde": kalk_lengde, "Skalar × Vektor 1": kalk_skalar_produkt, "Ortogonal test": er_ortogonal, "Vinkel": kalk_vinkel, "Posisjon ved t": posisjon_ved_t, "Vektorprojeksjon": vektorprojeksjon, "Areal parallellogram": parallellogram_areal ,"Kryssprodukt (3D)": kalk_kryss}
 
 #operasjonsmeny
 ttk.Label(main_frame, text="Velg operasjon:", style="Dark.TLabel").grid(row=row, column=0, sticky="e", pady=10)
