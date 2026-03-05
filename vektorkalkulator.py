@@ -51,7 +51,7 @@ class Vektor:
 root = tk.Tk()
 APP_VERSION = "2.0"
 root.title(f"Vektorkalkulator R1 v{APP_VERSION}")
-root.geometry("1100x750")
+root.geometry("1150x750")
 root.minsize(900, 500)
 
 #Farger og stil
